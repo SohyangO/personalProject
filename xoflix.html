@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영화검색 사이트</title>
+</head>
+<style>
+    .logo {
+        display: inline-flex;
+    }
+
+    .search {
+        display: inline-flex;
+        float: right;
+        margin-right: 40px;
+    }
+
+    .movieCard {
+        width: 300px;
+        margin: 40px 20px;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid darkblue;
+        padding: 20px 35px;
+        border-radius: 20px;
+        float: left;
+        height: 850px;
+    }
+</style>
+
+<header>
+    <h1 class="logo">Spartaflix</h1>
+    <p class="searchBox">영화 검색 : <input id="surf" type="text" placeholder="영화 제목을 입력해주세요.">
+        <input id="btn" type="button" value="검색">
+    </p>
+</header>
+
+<body>
+    <div id="movie">
+        <!-- <div class="movieCard">
+            <h2>영화 제목</h2>
+            <img src="https://image.tmdb.org/t/p/w500/1E5baAaEse26fej7uHcjOgEE2t2.jpg" alt="">
+            <p>s simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
+                standard
+                dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make
+                a
+                type specimen book.</p>
+            <p>평점 8.64/10</p>
+        </div>
+        <div class="movieCard">
+            <h2>영화 제목</h2>
+            <img src="https://image.tmdb.org/t/p/w500/1E5baAaEse26fej7uHcjOgEE2t2.jpg" alt="">
+            <p>s simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
+                standard
+                dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make
+                a
+                type specimen book.</p>
+            <p>평점 8.64/10</p>
+        </div> -->
+    </div>
+    <script>
+
+        const options = {
+            method: 'GET',
+            headers: {
+                accept: 'application/json',
+                Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhNmI2ZGJkM2YxNTIwYzU0Mzk4OGMxZWQ3ZTIwNTUyZCIsInN1YiI6IjY1OTYxYjkxNTkwN2RlNjYyNTYzYzAwZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.p8IC4h9MKHXEqeoBrSxdS0xHXBWkwoCiNYdn9Xf1HZ4'
+            }
+        };
+        fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', options)
+            .then(response => response.json())
+            .then(response => {
+                function displayMovies(movies){
+                    response.results.forEach((movie) => {
+                    const movieDiv = document.getElementById("movie");
+                    movieDiv.innerHTML += `
+                        <div class="movieCard">
+                        <h2>${movie.title}</h2>
+                        <img src="https://image.tmdb.org/t/p/w500/${movie.poster_path}" alt="">
+                        <p>${movie.overview}</p>
+                        <p>평점 ${movie.vote_average}</p>
+                </div>`})
+                }
+                displayMovies(response.results);
+                
+                console.log(response.results);
+                console.log(response);
+
+               
+
+                document.getElementById("btn").addEventListener("click", function () {
+                    function surfFilter(){
+                    const searchTerm = document.getElementById("surf").value.trim().toLowerCase(); //입력값 받아옴
+                    const filtered = response.results.filter((movie) => 
+                    movie.title.toLowerCase().includes(searchTerm));
+                    return `
+                        <div class="movieCard">
+                        <h2>${movie.title}</h2>
+                        <img src="https://image.tmdb.org/t/p/w500/${movie.poster_path}" alt="">
+                        <p>${movie.overview}</p>
+                        <p>평점 ${movie.vote_average}</p>
+                </div>`;
+                }
+                    
+                })
+
+                // function surf() {
+                //     let surf = document.getElementById("search").value; // 입력된 값
+                //     let turn = searchFilter(response.results, surf);
+
+                //     turn.forEach((movie) => {
+                //         let temp = `<div class="movieCard">
+                //         <h2>${movie.title}</h2>
+                //         <img src="https://image.tmdb.org/t/p/w500/${movie.poster_path}" alt="">
+                //         <p>${movie.overview}</p>
+                //         <p>평점 ${movie.vote_average}</p>
+                // </div>`;
+                //         document.querySelector("#movie").insertAdjacentElement('beforeend', temp);
+                //     })
+
+            //     }
+            })
+            .catch(err => console.error(err));
+
+
+
+    </script>
+</body>
+
+</html>
