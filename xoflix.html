@@ -8,6 +8,23 @@
 </head>
 <style>
     .logo {
+        text-decoration: none;
+    }
+
+    .logo:visited {
+        color: black !important
+    }
+
+    .logo:hover {
+        text-decoration: none;
+    }
+
+    .logo:active {
+        text-decoration: none;
+        color: black !important;
+    }
+
+    .logo {
         display: inline-flex;
     }
 
@@ -27,13 +44,16 @@
         border-radius: 20px;
         float: left;
         height: 850px;
+        cursor: pointer;
     }
 </style>
 
 <header>
-    <h1 class="logo">Spartaflix</h1>
-    <p class="searchBox">영화 검색 : <input id="surf" type="text" placeholder="영화 제목을 입력해주세요.">
-        <input id="btn" type="button" value="검색">
+    <a class="logo" href="">
+        <h1 class="logo">Spartaflix</h1>
+    </a>
+    <p class="searchBox">영화 검색 : <input id="surf-input" type="text" placeholder="영화 제목을 입력해주세요." autofocus>
+        <input id="btn" type="button" onkeyup="enterkey();" value="검색">
     </p>
 </header>
 
@@ -72,10 +92,10 @@
         fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', options)
             .then(response => response.json())
             .then(response => {
-                function displayMovies(movies){
+                function displayMovies(movies) { // 기본 로딩 화면
                     response.results.forEach((movie) => {
-                    const movieDiv = document.getElementById("movie");
-                    movieDiv.innerHTML += `
+                        const movieDiv = document.getElementById("movie");
+                        movieDiv.innerHTML += `
                         <div class="movieCard">
                         <h2>${movie.title}</h2>
                         <img src="https://image.tmdb.org/t/p/w500/${movie.poster_path}" alt="">
@@ -84,43 +104,61 @@
                 </div>`})
                 }
                 displayMovies(response.results);
-                
+
                 console.log(response.results);
-                console.log(response);
 
-               
 
-                document.getElementById("btn").addEventListener("click", function () {
-                    function surfFilter(){
-                    const searchTerm = document.getElementById("surf").value.trim().toLowerCase(); //입력값 받아옴
-                    const filtered = response.results.filter((movie) => 
-                    movie.title.toLowerCase().includes(searchTerm));
-                    return `
-                        <div class="movieCard">
-                        <h2>${movie.title}</h2>
-                        <img src="https://image.tmdb.org/t/p/w500/${movie.poster_path}" alt="">
-                        <p>${movie.overview}</p>
-                        <p>평점 ${movie.vote_average}</p>
-                </div>`;
+                /*-------------카드 클릭 시 alert창 띄우기-----------------*/
+                document.getElementsByClassName("movieCard").addEventListener('click', clickBox);
+                function clickBox() {
+                    let movieID = movieCard.getAttribute()
+                    alert(`Movie ID: ${id}`);
                 }
-                    
-                })
 
-                // function surf() {
-                //     let surf = document.getElementById("search").value; // 입력된 값
-                //     let turn = searchFilter(response.results, surf);
+                /*-----검색 시 이벤트 발생-----*/
 
-                //     turn.forEach((movie) => {
-                //         let temp = `<div class="movieCard">
-                //         <h2>${movie.title}</h2>
-                //         <img src="https://image.tmdb.org/t/p/w500/${movie.poster_path}" alt="">
-                //         <p>${movie.overview}</p>
-                //         <p>평점 ${movie.vote_average}</p>
-                // </div>`;
-                //         document.querySelector("#movie").insertAdjacentElement('beforeend', temp);
-                //     })
+                document.getElementById("btn").addEventListener("click", surf); //검색 버튼 클릭 시, 데이터 찾기 실행
+                function surf() { //실행할 함수
+                    fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', options)
+                        .then(response => response.json())
+                        .then(response => {
+                            const searchMovie = response.results.map(movie => ({ //불러올 데이터들
+                                id: movie.id,
+                                title: movie.title,
+                                overview: movie.overview,
+                                poster_path: `https://image.tmdb.org/t/p/w500/${movie.poster_path}`,
+                                voteRate: movie.vote_average,
+                            }));
 
-            //     }
+                            const surfTerm = document.getElementById("surf-input").value.trim().toUpperCase(); //검색창 입력값 받아옴
+                            const movieDiv2 = document.getElementById("movie"); //받아온 데이터 출력할 div
+                            const filtered = response.results.filter(movie =>
+                                movie.title.toUpperCase().includes(surfTerm)); //필터기능
+                            movieDiv2.innerHTML = "";
+
+                            filtered.forEach(movie => {
+                                movieDiv2.innerHTML += `
+                                    <div class="movieCard">
+                                     <h2>${title}</h2>
+                                     <img src="https://image.tmdb.org/t/p/w500/${movie.poster_path}" alt="">
+                                     <p>${movie.overview}</p>
+                                     <p>평점 ${movie.vote_average}</p>
+                                     </div>`
+                            })
+
+                            if (!surfTerm) { //input창에 아무것도 없는 경우, 경고창 띄우기
+                                alert("영화 제목을 입력해 주세요.");
+                                document.getElementById("surf-input").focus();
+                                return false;
+                            }
+                        });
+                }
+
+                 function enterkey() {
+                    if (e.key == "Enter" || e.keyCode == 13){
+                        surf();
+                    }          
+                }
             })
             .catch(err => console.error(err));
 
