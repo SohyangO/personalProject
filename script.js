@@ -19,7 +19,7 @@ fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', opti
                 <p>Ratings ${movie.vote_average}/10</p>
         </div>`})
             /*-------------카드 클릭 시 alert창 띄우기-----------------*/
-            document.querySelector(".movieCard").addEventListener('click', clickBox);
+            document.querySelectorAll(".movieCard").addEventListener('click', clickBox);
             function clickBox(event) {
                 alert(`Movie ID: ${event.currentTarget.getAttribute('movieId')}`);
             }
@@ -62,7 +62,7 @@ fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', opti
                     })
 
                     if (!surfTerm) { //input창에 아무것도 없는 경우, 경고창 띄우기
-                        alert("영화 제목을 입력해 주세요.");
+                        alert("Please enter a movie title.");
                         document.getElementById("surf-input").focus();
                         return false;
                     }
