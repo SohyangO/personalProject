@@ -8,7 +8,7 @@ const options = {
 fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', options)
     .then(response => response.json())
     .then(response => {
-        function displayMovies(movies) { // 기본 로딩 화면
+        function displayMovies() { // 기본 로딩 화면
             response.results.forEach((movie) => {
                 const movieDiv = document.getElementById("movie");
                 movieDiv.innerHTML += `
@@ -19,12 +19,15 @@ fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', opti
                 <p>Ratings ${movie.vote_average}/10</p>
         </div>`})
             /*-------------카드 클릭 시 alert창 띄우기-----------------*/
-            document.querySelectorAll(".movieCard").addEventListener('click', clickBox);
+            const movieAll= document.querySelectorAll(".movieCard")
+            movieAll.forEach( movie =>
+                movie.addEventListener('click', clickBox));
+
             function clickBox(event) {
                 alert(`Movie ID: ${event.currentTarget.getAttribute('movieId')}`);
             }
         }
-        displayMovies(response.results);
+        displayMovies();
 
         console.log(response.results);
 
@@ -37,15 +40,7 @@ fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', opti
             fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', options)
                 .then(response => response.json())
                 .then(response => {
-                    const searchMovie = response.results.map(movie => ({ //불러올 데이터들
-                        id: movie.id,
-                        title: movie.title,
-                        overview: movie.overview,
-                        poster_path: `https://image.tmdb.org/t/p/w500/${movie.poster_path}`,
-                        voteRate: movie.vote_average,
-                    }));
-
-                    const surfTerm = document.getElementById("surf-input").value.trim().toUpperCase(); //검색창 입력값 받아옴
+                    const surfTerm = document.getElementById("surfInput").value.trim().toUpperCase(); //검색창 입력값 받아옴
                     const movieDiv2 = document.getElementById("movie"); //받아온 데이터 출력할 div
                     const filtered = response.results.filter(movie =>
                         movie.title.toUpperCase().includes(surfTerm)); //필터기능
@@ -63,8 +58,15 @@ fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', opti
 
                     if (!surfTerm) { //input창에 아무것도 없는 경우, 경고창 띄우기
                         alert("Please enter a movie title.");
-                        document.getElementById("surf-input").focus();
+                        document.getElementById("surfInput").focus();
                         return false;
+                    }
+                    const movieAll= document.querySelectorAll(".movieCard")
+                    movieAll.forEach( movie =>
+                        movie.addEventListener('click', clickBox));
+        
+                    function clickBox(event) {
+                        alert(`Movie ID: ${event.currentTarget.getAttribute('movieId')}`);
                     }
                 });
         }
