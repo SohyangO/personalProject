@@ -30,6 +30,8 @@
   color: white;
   margin: 0px;
   padding-top: 80px;
+  font-size: 2em;
+  font-weight: bold;
 }
 
 .head {
@@ -57,6 +59,7 @@
   text-align: center;
   color: white;
   font-size: 23px;
+  margin-bottom: 12px;
 }
 
 .input {
@@ -86,4 +89,19 @@
   cursor: pointer;
   color: whitesmoke;
   background-color: #3e3b3bc9;
+}
+.movieCard > h2 {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+.movieCard > p {
+  margin: 40px 10px 20px 10px;
+  font-size: 18px;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 8;
 }
